@@ -1,5 +1,4 @@
 import { createFileRoute } from '@tanstack/react-router'
-import logo from '../logo.svg'
 import SlotMachineBackground from '@/components/slot-machine-background'
 import SlotMachineHeader from '@/components/slot-machine-header'
 import SlotMachine from '@/components/slot-machine'

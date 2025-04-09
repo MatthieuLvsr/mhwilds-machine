@@ -12,7 +12,7 @@ interface ReelProps {
   isShaking: boolean
 }
 
-export default function Reel({ index, result, isSpinning, isStopped, isShaking }: ReelProps) {
+export default function Reel({ index, result, isSpinning, isShaking }: ReelProps) {
   // Déterminer quel type d'icône afficher en fonction de l'index du rouleau
   const renderIcon = () => {
     if (index === 0) return <MonsterIcon monster={result} size={24} />

@@ -9,7 +9,7 @@ interface ScoreDisplayProps {
   challengeBonus: number
 }
 
-export default function ScoreDisplay({ score, monster, challenge, monsterScore, challengeBonus }: ScoreDisplayProps) {
+export default function ScoreDisplay({ score, monsterScore, challengeBonus }: ScoreDisplayProps) {
   // Déterminer si le score est élevé (plus de 120 points)
   const isHighScore = score > 120
 
