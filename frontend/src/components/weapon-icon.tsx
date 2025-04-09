@@ -1,19 +1,4 @@
-import {
-  Sword,
-  Swords,
-  Shield,
-  BoxIcon as Bow,
-  Crosshair,
-  Hammer,
-  Bug,
-  Axe,
-  Pickaxe,
-  Target,
-  SwordIcon,
-  Shovel,
-  Syringe,
-  Music,
-} from "lucide-react"
+import { weaponIcons } from "@/resources"
 import { motion } from "framer-motion"
 
 interface WeaponIconProps {
@@ -23,39 +8,18 @@ interface WeaponIconProps {
 }
 
 export default function WeaponIcon({ weapon, size = 24, className = "" }: WeaponIconProps) {
-  const getIcon = () => {
-    switch (weapon) {
-      case "GS": // Great Sword
-        return <Sword />
-      case "DB": // Dual Blades
-        return <Swords />
-      case "Lance":
-        return <Shield />
-      case "Bow":
-        return <Bow />
-      case "HBG": // Heavy Bowgun
-        return <Crosshair />
-      case "Hammer":
-        return <Hammer />
-      case "IG": // Insect Glaive
-        return <Bug />
-      case "CB": // Charge Blade
-        return <Axe />
-      case "SA": // Switch Axe
-        return <Pickaxe />
-      case "LBG": // Light Bowgun
-        return <Target />
-      case "SNS": // Sword and Shield
-        return <SwordIcon />
-      case "GL": // Gunlance
-        return <Shovel />
-      case "LS": // Long Sword
-        return <Syringe />
-      case "HH": // Hunting Horn
-        return <Music />
-      default:
-        return <Sword />
-    }
+  const iconSrc = weaponIcons[weapon]
+
+  if (!iconSrc) {
+    console.warn(`Missing icon for weapon: ${weapon}`)
+    return (
+      <div
+        className={`bg-red-700 text-white text-xs flex items-center justify-center rounded ${className}`}
+        style={{ width: size, height: size }}
+      >
+        ❓
+      </div>
+    )
   }
 
   return (
@@ -74,11 +38,18 @@ export default function WeaponIcon({ weapon, size = 24, className = "" }: Weapon
       }}
       transition={{
         scale: { duration: 0.3 },
-        rotate: { duration: 1.5, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" },
-        filter: { duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" },
+        rotate: { duration: 1.5, repeat: Infinity, ease: "easeInOut" },
+        filter: { duration: 2, repeat: Infinity, ease: "easeInOut" },
       }}
     >
-      {getIcon()}
+      <img
+        src={iconSrc}
+        alt={weapon}
+        width={size}
+        height={size}
+        className="w-full h-full object-contain"
+        draggable={false}
+      />
     </motion.div>
   )
 }

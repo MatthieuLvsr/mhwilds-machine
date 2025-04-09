@@ -1,5 +1,6 @@
+import { monsterIcons } from "@/resources"
 import { motion } from "framer-motion"
-import { Flame, Zap, Wind, Mountain, Skull, Snowflake, Sword, Shield } from "lucide-react"
+import clsx from "clsx"
 
 interface MonsterIconProps {
   monster: string
@@ -7,56 +8,29 @@ interface MonsterIconProps {
   className?: string
 }
 
-export default function MonsterIcon({ monster, size = 24, className = "" }: MonsterIconProps) {
-  const getIcon = () => {
-    switch (monster) {
-      case "Arkveld":
-        return <Snowflake />
-      case "Doshaguma":
-        return <Mountain />
-      case "Quematrice":
-        return <Flame />
-      case "Zoh Shia":
-        return <Shield />
-      case "Guardian Rathalos":
-        return <Sword />
-      case "Chatacabra":
-        return <Wind />
-      case "Gore Magala":
-        return <Skull />
-      case "Rajang":
-        return <Zap />
-      default:
-        return <Flame />
-    }
-  }
+const monsterColors: Record<string, string> = {
+  Arkveld: "text-sky-400",
+  Doshaguma: "text-amber-500",
+  Quematrice: "text-red-500",
+  "Zoh Shia": "text-emerald-400",
+  "Guardian Rathalos": "text-red-600",
+  Chatacabra: "text-purple-400",
+  "Gore Magala": "text-indigo-500",
+  Rajang: "text-yellow-400",
+}
 
-  const getColor = () => {
-    switch (monster) {
-      case "Arkveld":
-        return "text-sky-400"
-      case "Doshaguma":
-        return "text-amber-500"
-      case "Quematrice":
-        return "text-red-500"
-      case "Zoh Shia":
-        return "text-emerald-400"
-      case "Guardian Rathalos":
-        return "text-red-600"
-      case "Chatacabra":
-        return "text-purple-400"
-      case "Gore Magala":
-        return "text-indigo-500"
-      case "Rajang":
-        return "text-yellow-400"
-      default:
-        return "text-red-400"
-    }
+export default function MonsterIcon({ monster, size = 48, className = "" }: MonsterIconProps) {
+  const iconSrc = monsterIcons[monster]
+  const colorClass = monsterColors[monster] ?? "text-red-400"
+
+  if (!iconSrc) {
+    console.warn(`No icon found for monster: ${monster}`)
+    return null
   }
 
   return (
     <motion.div
-      className={`${getColor()} ${className}`}
+      className={clsx(colorClass, className)}
       style={{ width: size, height: size }}
       initial={{ scale: 0 }}
       animate={{
@@ -70,11 +44,16 @@ export default function MonsterIcon({ monster, size = 24, className = "" }: Mons
       }}
       transition={{
         scale: { duration: 0.3 },
-        rotate: { duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" },
-        filter: { duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" },
+        rotate: { duration: 2, repeat: Infinity, ease: "easeInOut" },
+        filter: { duration: 2, repeat: Infinity, ease: "easeInOut" },
       }}
     >
-      {getIcon()}
+      <img
+        src={iconSrc}
+        alt={monster}
+        className="w-full h-full object-contain"
+        draggable={false}
+      />
     </motion.div>
   )
 }

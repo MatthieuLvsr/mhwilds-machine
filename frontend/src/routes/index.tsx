@@ -2,12 +2,24 @@ import { createFileRoute } from '@tanstack/react-router'
 import SlotMachineBackground from '@/components/slot-machine-background'
 import SlotMachineHeader from '@/components/slot-machine-header'
 import SlotMachine from '@/components/slot-machine'
+import { useEffect } from 'react'
 
 export const Route = createFileRoute('/')({
   component: App,
 })
 
 function App() {
+
+  useEffect(() => {
+    document.title = "Monster Hunter Slot Machine 🎰"
+  }, [])
+  useEffect(() => {
+    const link = document.querySelector("link[rel~='icon']") as HTMLLinkElement
+    if (link) {
+      link.href = "/rajang-angry.png"
+    }
+  }, [])
+  
   return (
     <main className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-amber-900 to-amber-950 p-4">
       <SlotMachineBackground />
