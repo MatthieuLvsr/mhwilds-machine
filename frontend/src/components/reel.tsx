@@ -3,30 +3,38 @@ import { cn } from "@/lib/utils"
 import MonsterIcon from "./monster-icon"
 import ChallengeIcon from "./challenge-icon"
 import WeaponIcon from "./weapon-icon"
+import type { Monster } from "@/resources"
 
 interface ReelProps {
   index: number
-  result: string
+  result: string | Monster
   isSpinning: boolean
   isStopped: boolean
   isShaking: boolean
 }
 
 export default function Reel({ index, result, isSpinning, isShaking }: ReelProps) {
-  // Déterminer quel type d'icône afficher en fonction de l'index du rouleau
-  const renderIcon = () => {
-    if (index === 0) return <MonsterIcon monster={result} size={24} />
-    if (index === 1) return <WeaponIcon weapon={result} size={24} />
-    if (index === 2) return <ChallengeIcon challenge={result} size={24} />
-    return null
+  // 🔎 Extraire le texte à afficher
+  const getLabel = () => {
+    if (!result || result === "?") return "?"
+    return typeof result === "string" ? result : result.name
   }
 
-  // Déterminer la couleur du texte en fonction de l'index du rouleau
+  // 🎨 Couleur en fonction du type de slot
   const getTextColor = () => {
     if (index === 0) return "text-red-400"
     if (index === 1) return "text-blue-400"
     if (index === 2) return "text-yellow-400"
     return ""
+  }
+
+  // 🎭 Icône dynamique selon le type
+  const renderIcon = () => {
+    if (!result || result === "?") return null
+    if (index === 0 && typeof result !== "string") return <MonsterIcon monster={result} size={64} />
+    if (index === 1 && typeof result === "string") return <WeaponIcon weapon={result} size={64} />
+    if (index === 2 && typeof result === "string") return <ChallengeIcon challenge={result} size={24} />
+    return null
   }
 
   return (
@@ -45,7 +53,7 @@ export default function Reel({ index, result, isSpinning, isShaking }: ReelProps
             className="flex flex-col items-center"
             animate={{ y: [0, -500, 0] }}
             transition={{
-              repeat: isSpinning ? Number.POSITIVE_INFINITY : 0,
+              repeat: isSpinning ? Infinity : 0,
               duration: 0.5 + index * 0.2,
               ease: "linear",
               repeatType: "loop",
@@ -64,7 +72,7 @@ export default function Reel({ index, result, isSpinning, isShaking }: ReelProps
           </motion.div>
         ) : (
           <motion.div
-            key={`result-${result}-${index}`}
+            key={`result-${index}-${getLabel()}`}
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
@@ -76,9 +84,9 @@ export default function Reel({ index, result, isSpinning, isShaking }: ReelProps
             }}
             className="flex flex-col items-center justify-center w-full h-full"
           >
-            {result && result !== "?" ? (
+            {getLabel() !== "?" ? (
               <div className={cn("text-center font-bold text-xl flex flex-col items-center gap-2", getTextColor())}>
-                <span>{result}</span>
+                <span>{getLabel()}</span>
                 {renderIcon()}
               </div>
             ) : (

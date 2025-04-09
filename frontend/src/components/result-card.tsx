@@ -4,9 +4,10 @@ import { motion } from "framer-motion"
 import MonsterIcon from "./monster-icon"
 import ChallengeIcon from "./challenge-icon"
 import WeaponIcon from "./weapon-icon"
+import type { Monster } from "@/resources"
 
 interface ResultCardProps {
-  monster: string
+  monster: Monster
   weapon: string
   challenge: string
 }
@@ -48,8 +49,8 @@ export default function ResultCard({ monster, weapon, challenge }: ResultCardPro
             }}
             transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
           >
-            {monster}
-            {monster && <MonsterIcon monster={monster} size={20} />}
+            {monster.name}
+            {monster && <MonsterIcon monster={monster} size={24} />}
           </motion.div>
           <span className="text-amber-100">with a</span>
           <motion.div

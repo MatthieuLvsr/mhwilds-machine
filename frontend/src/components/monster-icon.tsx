@@ -1,36 +1,21 @@
-import { monsterIcons } from "@/resources"
 import { motion } from "framer-motion"
-import clsx from "clsx"
+import type { Monster } from "@/resources"
 
 interface MonsterIconProps {
-  monster: string
+  monster: Monster
   size?: number
   className?: string
 }
 
-const monsterColors: Record<string, string> = {
-  Arkveld: "text-sky-400",
-  Doshaguma: "text-amber-500",
-  Quematrice: "text-red-500",
-  "Zoh Shia": "text-emerald-400",
-  "Guardian Rathalos": "text-red-600",
-  Chatacabra: "text-purple-400",
-  "Gore Magala": "text-indigo-500",
-  Rajang: "text-yellow-400",
-}
-
-export default function MonsterIcon({ monster, size = 48, className = "" }: MonsterIconProps) {
-  const iconSrc = monsterIcons[monster]
-  const colorClass = monsterColors[monster] ?? "text-red-400"
-
-  if (!iconSrc) {
-    console.warn(`No icon found for monster: ${monster}`)
+export default function MonsterIcon({ monster, size = 24, className = "" }: MonsterIconProps) {
+  if (!monster.icon) {
+    console.warn("No icon found for monster:", monster.name)
     return null
   }
 
   return (
     <motion.div
-      className={clsx(colorClass, className)}
+      className={className}
       style={{ width: size, height: size }}
       initial={{ scale: 0 }}
       animate={{
@@ -49,8 +34,10 @@ export default function MonsterIcon({ monster, size = 48, className = "" }: Mons
       }}
     >
       <img
-        src={iconSrc}
-        alt={monster}
+        src={monster.icon}
+        alt={monster.name}
+        width={size}
+        height={size}
         className="w-full h-full object-contain"
         draggable={false}
       />

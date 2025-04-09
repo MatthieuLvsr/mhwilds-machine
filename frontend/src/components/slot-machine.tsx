@@ -8,74 +8,8 @@ import Reel from "./reel"
 import ScoreDisplay from "./score-display"
 import HighScoreBadge from "./high-score-badge"
 import SoundEffects from "./sound-effects"
-
-// Mise à jour des monstres pour Monster Hunter Wilds
-const monsters = [
-  "Arkveld",
-  "Doshaguma Alpha",
-  "Quematrice",
-  "Zoh Shia",
-  "Guardian Rathalos",
-  "Chatacabra",
-  "Gore Magala",
-  "Ajarakan",
-  "Guardian Fulgur Anjanath",
-  "Guardian Arkveld",
-  "Balahara",
-  "Lala Barina",
-  "Blangonga",
-  "Congalala",
-  "Jin Dahaad",
-  "Doshaguma",
-  "Uth Duna",
-  "Gravios",
-  "Gypceros",
-  "Hirabami",
-  "Mizutsune",
-  "Nerscylla",
-  "Guardian Disaster Odogaron",
-  "Rathian",
-  "Rey Dau",
-  "Rompopolo",
-  "Nu Udra",
-  "Xu Wu",
-  "Yian Kut-Ku",
-]
-
-// Valeurs de score pour chaque monstre
-const monsterScores: Record<string, number> = {
-  Arkveld: 60,
-  Doshaguma: 40,
-  Quematrice: 70,
-  "Zoh Shia": 85,
-  "Guardian Rathalos": 80,
-  Chatacabra: 50,
-  "Gore Magala": 90,
-  Rajang: 100,
-  Ajarakan: 55,
-  Anjanathg: 62,
-  Arkveldg: 58,
-  Balahara: 45,
-  Barina: 49,
-  Blangonga: 67,
-  Congalala: 41,
-  Dahaad: 73,
-  Dosh: 52,
-  Duna: 60,
-  Gravios: 88,
-  Gypceros: 43,
-  Hirabami: 39,
-  Mizutsune: 78,
-  Nerscylla: 61,
-  Odogarong: 64,
-  Rathalosg: 84,
-  Rathian: 79,
-  Rey: 46,
-  Rompopolo: 53,
-  Udra: 59,
-  Xu: 37,
-  Yian: 66,
-}
+import { getRandomItem } from "@/lib/utils"
+import { monsters, type Monster } from "@/resources"
 
 const weapons = ["GS", "DB", "Lance", "Bow", "HBG", "Hammer", "IG", "CB", "SA", "LBG", "SNS", "GL", "LS", "HH"]
 
@@ -92,8 +26,7 @@ const challenges = [
   "Aerial Attacks Only",
 ]
 
-// Bonus de pourcentage pour chaque défi
-const challengeBonuses = {
+export const challengeBonuses = {
   "No Healing": 50,
   "Only Traps": 30,
   "No Armor": 40,
@@ -104,32 +37,44 @@ const challengeBonuses = {
   "No Faints": 60,
   "Naked Run": 55,
   "Aerial Attacks Only": 35,
+
+  // 🆕 Niveau clown fiesta
+  "Drunk Controls (Invert Camera)": 45,
+  "Gathering Tools Only": 70,
+  "Kick Only (No Weapons)": 90,
+  "Felyne Friend Must Land Final Hit": 60,
+  "No Rolling, Only Walking": 50,
+  "Palico-Only Fight (Player AFK)": 100,
+  "Camera Zoomed All The Way In": 25,
+  "No Target Lock": 15,
+  "No Dodge, Only Guard": 35,
+  "No Combos (1 hit max per opening)": 30,
+  "Always Singing (Spam Horn Songs)": 20,
+  "Every Hit Must Be a Mount Attack": 65,
+  "Paralyze the Monster Before Every Hit": 75,
+  "Use Random Weapon Each Zone": 60,
+  "No Sprinting, Only Hops": 40,
 }
 
 export default function SlotMachine() {
   const [spinning, setSpinning] = useState(false)
-  const [results, setResults] = useState<string[]>(["", "", ""])
+  const [results, setResults] = useState<[Monster | null, string, string]>([null, "", ""])
   const [reelsStopped, setReelsStopped] = useState([false, false, false])
   const [showResult, setShowResult] = useState(false)
   const [shakeReel, setShakeReel] = useState<number | null>(null)
   const [reelsSpinning, setReelsSpinning] = useState([false, false, false])
 
-  // États pour le score
   const [score, setScore] = useState(0)
   const [showScore, setShowScore] = useState(false)
   const [highScore, setHighScore] = useState(0)
 
-  const getRandomItem = (array: string[]) => array[Math.floor(Math.random() * array.length)]
-
-  // Fonction pour calculer le score
-  const calculateScore = (monster: string, challenge: string) => {
-    const baseScore = monsterScores[monster as keyof typeof monsterScores] || 50
-    const bonusPercentage = challengeBonuses[challenge as keyof typeof challengeBonuses] || 0
-    return Math.round(baseScore * (1 + bonusPercentage / 100))
+  const calculateScore = (monster: Monster, challenge: string) => {
+    const baseScore = monster.score
+    const bonus = challengeBonuses[challenge as keyof typeof challengeBonuses] ?? 0
+    return Math.round(baseScore * (1 + bonus / 100))
   }
 
   const spin = () => {
-    // Réinitialiser tous les états
     setSpinning(true)
     setShowResult(false)
     setShowScore(false)
@@ -137,31 +82,29 @@ export default function SlotMachine() {
     setReelsSpinning([true, true, true])
     setShakeReel(null)
 
-    // Génération des résultats stockés localement
-    const newResults = [getRandomItem(monsters), getRandomItem(weapons), getRandomItem(challenges)]
+    const monster = getRandomItem(monsters)
+    const weapon = getRandomItem(weapons)
+    const challenge = getRandomItem(challenges)
 
-    // Réinitialiser les résultats avec des placeholders pendant le spin
-    setResults(["?", "?", "?"])
+    const newResults: [Monster, string, string] = [monster, weapon, challenge]
+    setResults([null, "", ""])
 
-    // Premier rouleau s'arrête
     setTimeout(() => {
-      setResults([newResults[0], "?", "?"])
+      setResults([monster, "", ""] as any)
       setReelsStopped([true, false, false])
       setReelsSpinning([false, true, true])
       setShakeReel(0)
       setTimeout(() => setShakeReel(null), 300)
     }, 1500)
 
-    // Deuxième rouleau s'arrête
     setTimeout(() => {
-      setResults([newResults[0], newResults[1], "?"])
+      setResults([monster, weapon, ""] as any)
       setReelsStopped([true, true, false])
       setReelsSpinning([false, false, true])
       setShakeReel(1)
       setTimeout(() => setShakeReel(null), 300)
     }, 2500)
 
-    // Troisième rouleau s'arrête
     setTimeout(() => {
       setResults(newResults)
       setReelsStopped([true, true, true])
@@ -171,11 +114,9 @@ export default function SlotMachine() {
       setShakeReel(2)
       setTimeout(() => setShakeReel(null), 300)
 
-      // Calculer et afficher le score après un court délai
-      const newScore = calculateScore(newResults[0], newResults[2])
+      const newScore = calculateScore(monster, challenge)
       setScore(newScore)
 
-      // Mettre à jour le high score si nécessaire
       if (newScore > highScore) {
         setHighScore(newScore)
       }
@@ -190,30 +131,27 @@ export default function SlotMachine() {
     setSpinning(false)
     setReelsStopped([false, false, false])
     setReelsSpinning([false, false, false])
-    setResults(["", "", ""])
+    setResults([null, "", ""])
     setShowResult(false)
     setShowScore(false)
     setShakeReel(null)
     setScore(0)
   }
 
-  // Auto-spin on first load
   useEffect(() => {
     spin()
   }, [])
 
   return (
     <div className="w-full max-w-2xl bg-amber-800 rounded-xl shadow-2xl p-6 border-4 border-amber-600 relative">
-      {/* High Score Badge */}
       {highScore > 0 && <HighScoreBadge score={highScore} />}
 
-      {/* Reels */}
       <div className="flex flex-col md:flex-row gap-4 mb-6">
         {[0, 1, 2].map((reelIndex) => (
           <Reel
             key={reelIndex}
             index={reelIndex}
-            result={results[reelIndex]}
+            result={results[reelIndex] as any} // adjust types inside Reel if needed
             isSpinning={reelsSpinning[reelIndex]}
             isStopped={reelsStopped[reelIndex]}
             isShaking={shakeReel === reelIndex}
@@ -221,32 +159,34 @@ export default function SlotMachine() {
         ))}
       </div>
 
-      {/* Labels */}
       <div className="flex flex-col md:flex-row gap-4 mb-6">
         <ReelLabel label="Monster" color="text-red-300" />
         <ReelLabel label="Weapon" color="text-blue-300" />
         <ReelLabel label="Challenge" color="text-yellow-300" />
       </div>
 
-      {/* Result display */}
       <AnimatePresence>
-        {showResult && <ResultCard monster={results[0]} weapon={results[1]} challenge={results[2]} />}
+        {showResult && (
+          <ResultCard
+            monster={results[0]||monsters[0]}
+            weapon={results[1]}
+            challenge={results[2]}
+          />
+        )}
       </AnimatePresence>
 
-      {/* Score display */}
       <AnimatePresence>
-        {showScore && (
+        {showScore && results[0] && (
           <ScoreDisplay
             score={score}
-            monster={results[0]}
+            monster={results[0].name}
             challenge={results[2]}
-            monsterScore={monsterScores[results[0] as keyof typeof monsterScores] || 0}
+            monsterScore={results[0].score}
             challengeBonus={challengeBonuses[results[2] as keyof typeof challengeBonuses] || 0}
           />
         )}
       </AnimatePresence>
 
-      {/* Controls */}
       <div className="flex justify-center gap-4">
         <Button
           onClick={spin}
@@ -266,7 +206,6 @@ export default function SlotMachine() {
         </Button>
       </div>
 
-      {/* Sound Effects */}
       <SoundEffects spinning={spinning} reelsStopped={reelsStopped} showResult={showResult} />
     </div>
   )
