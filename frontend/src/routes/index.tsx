@@ -21,7 +21,7 @@ function App() {
   }, [])
   
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-amber-900 to-amber-950 p-4">
+    <main className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-amber-800/90 to-amber-850/90 p-4 ">
       <SlotMachineBackground />
       <h1 className="text-4xl md:text-5xl font-bold text-amber-100 mb-4 text-center">Monster Hunter Wilds</h1>
       <SlotMachineHeader />

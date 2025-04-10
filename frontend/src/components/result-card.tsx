@@ -5,6 +5,7 @@ import MonsterIcon from "./monster-icon"
 import ChallengeIcon from "./challenge-icon"
 import WeaponIcon from "./weapon-icon"
 import type { Monster } from "@/resources"
+import { getRarityClass } from "@/lib/rarity-utils"
 
 interface ResultCardProps {
   monster: Monster
@@ -19,7 +20,7 @@ export default function ResultCard({ monster, weapon, challenge }: ResultCardPro
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.5 }}
-      className="bg-gradient-to-r from-amber-900/80 via-amber-800 to-amber-900/80 p-6 rounded-lg mb-4 border border-amber-600/50 shadow-lg"
+      className={`bg-gradient-to-r from-amber-900/80 via-amber-800 to-amber-900/80 p-6 rounded-lg mb-4 border-2 border-amber-600/50 shadow-lg ${getRarityClass(monster.score)}`}
     >
       <div className="flex flex-col items-center gap-3">
         <motion.div

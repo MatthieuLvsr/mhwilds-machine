@@ -5,6 +5,7 @@ import ChallengeIcon from "./challenge-icon"
 import WeaponIcon from "./weapon-icon"
 import UnknownIcon from "./unknown-icon"
 import type { Monster } from "@/resources"
+import UnknownMonsterIcon from "@/resources/monsters/unknown.png"
 
 interface ReelProps {
   index: number
@@ -16,7 +17,7 @@ interface ReelProps {
 
 export default function Reel({ index, result, isSpinning, isShaking }: ReelProps) {
   const getLabel = () => {
-    if (!result || result === "?") return "?"
+    if (!result || result === "?") return <img width={128} height={128} src={UnknownMonsterIcon}/>
     return typeof result === "string" ? result : result.name
   }
 

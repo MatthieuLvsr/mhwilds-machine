@@ -1,5 +1,6 @@
 import { motion } from "framer-motion"
 import UnknownMonsterIcon from "@/resources/monsters/unknown.png"
+import { cn } from "@/lib/utils"
 
 export type UnknownIconProps = {
   size: number
@@ -32,6 +33,7 @@ export default function UnknownIcon({ size, index, isSpinning }: UnknownIconProp
       className="relative overflow-hidden"
     >
       <motion.div
+        className={cn("flex flex-col")}
         animate={isSpinning ? { y: [-size * 5, 0] } : { y: 0 }}
         transition={{
           repeat: isSpinning ? Infinity : 0,
@@ -39,7 +41,6 @@ export default function UnknownIcon({ size, index, isSpinning }: UnknownIconProp
           ease: "linear",
           repeatType: "loop",
         }}
-        className="flex flex-col"
       >
         {items}
       </motion.div>
