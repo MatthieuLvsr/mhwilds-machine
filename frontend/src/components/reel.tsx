@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils"
 import MonsterIcon from "./monster-icon"
 import ChallengeIcon from "./challenge-icon"
 import WeaponIcon from "./weapon-icon"
+import UnknownIcon from "./unknown-icon"
 import type { Monster } from "@/resources"
 
 interface ReelProps {
@@ -14,13 +15,11 @@ interface ReelProps {
 }
 
 export default function Reel({ index, result, isSpinning, isShaking }: ReelProps) {
-  // 🔎 Extraire le texte à afficher
   const getLabel = () => {
     if (!result || result === "?") return "?"
     return typeof result === "string" ? result : result.name
   }
 
-  // 🎨 Couleur en fonction du type de slot
   const getTextColor = () => {
     if (index === 0) return "text-red-400"
     if (index === 1) return "text-blue-400"
@@ -28,7 +27,6 @@ export default function Reel({ index, result, isSpinning, isShaking }: ReelProps
     return ""
   }
 
-  // 🎭 Icône dynamique selon le type
   const renderIcon = () => {
     if (!result || result === "?") return null
     if (index === 0 && typeof result !== "string") return <MonsterIcon monster={result} size={64} />
@@ -48,28 +46,7 @@ export default function Reel({ index, result, isSpinning, isShaking }: ReelProps
     >
       <AnimatePresence mode="wait">
         {isSpinning ? (
-          <motion.div
-            key={`spinning-${index}`}
-            className="flex flex-col items-center"
-            animate={{ y: [0, -500, 0] }}
-            transition={{
-              repeat: isSpinning ? Infinity : 0,
-              duration: 0.5 + index * 0.2,
-              ease: "linear",
-              repeatType: "loop",
-            }}
-            exit={{
-              opacity: 0,
-              scale: 0.8,
-              transition: { duration: 0.2 },
-            }}
-          >
-            {[...Array(10)].map((_, i) => (
-              <div key={i} className="h-20 flex items-center justify-center text-amber-100 font-bold text-xl">
-                {i % 2 === 0 ? "?" : "!"}
-              </div>
-            ))}
-          </motion.div>
+          <UnknownIcon size={64} index={index} isSpinning={isSpinning} />
         ) : (
           <motion.div
             key={`result-${index}-${getLabel()}`}

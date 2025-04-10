@@ -28,6 +28,7 @@ import shiaIcon from './shia.png'
 import udraIcon from './udra.png'
 import xuIcon from './xu.png'
 import yianIcon from './yian.png'
+import quematriceIcon from './quematrice.png'
 
 export interface Monster {
   name: string
@@ -66,6 +67,7 @@ export const monsterIcons: Record<string, string> = {
   'Nu Udra': udraIcon,
   'Xu Wu': xuIcon,
   'Yian Kut-Ku': yianIcon,
+  Quematrice: quematriceIcon,
 }
 
 export const monsters: Monster[] = Object.entries({
